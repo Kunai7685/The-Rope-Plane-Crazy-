@@ -1,0 +1,52 @@
+Player = game.Players.LocalPlayer; if workspace:FindFirstChild(Player.Name.."Aircraft") then else game:GetService("StarterGui"):SetCore("SendNotification", { Title = "Warning"; Text = "Please start before executing this."; Duration = 5; }) return end
+PlayerAircraft = workspace:FindFirstChild(Player.Name.."Aircraft")
+MainHead = nil
+for i,v in pairs(PlayerAircraft:GetChildren()) do
+	if v.Name == "BlockStd" then
+		if v:FindFirstChild("BlockStd") then
+			local BlockStd = v:FindFirstChild("BlockStd")
+			if MainHead then
+				coroutine.resume(coroutine.create(function()
+					local BodyPosition = Instance.new("BodyPosition", BlockStd)
+					BodyPosition.MaxForce = Vector3.new(math.huge,math.huge,math.huge)
+					BodyPosition.Position = BlockStd.Position
+					local BodyGyro = Instance.new("BodyGyro", BlockStd)
+					BodyGyro.MaxTorque = Vector3.new(math.huge,math.huge,math.huge)
+					BodyGyro.CFrame = BlockStd.CFrame
+					wait(1)
+					BodyPosition.Position = BlockStd.Position + Vector3.new(0, 30, 0)
+					wait(1)
+					BodyPosition.Position = BlockStd.Position + Vector3.new(10, 0, 0)
+					wait(1)
+					BodyPosition:Destroy()
+					BodyGyro:Destroy()
+					local RopeConstraint = Instance.new("RopeConstraint", MainHead)
+					local Attachment0 = Instance.new("Attachment", MainHead)
+					local Attachment1 = Instance.new("Attachment", BlockStd)
+					RopeConstraint.Attachment0 = Attachment0
+					RopeConstraint.Attachment1 = Attachment1
+					RopeConstraint.Length = (MainHead.Position - BlockStd.Position).Magnitude
+				end))
+			else
+				MainHead = BlockStd
+				coroutine.resume(coroutine.create(function()
+					local BodyPosition = Instance.new("BodyPosition", BlockStd)
+					BodyPosition.MaxForce = Vector3.new(math.huge,math.huge,math.huge)
+					BodyPosition.Position = BlockStd.Position
+					local BodyGyro = Instance.new("BodyGyro", BlockStd)
+					BodyGyro.MaxTorque = Vector3.new(math.huge,math.huge,math.huge)
+					BodyGyro.CFrame = BlockStd.CFrame
+					wait(1)
+					BodyPosition.Position = BlockStd.Position + Vector3.new(0, 30, 0)
+					wait(1)
+					BodyPosition.Position = BlockStd.Position + Vector3.new(10, 0, 0)
+					wait(1)
+					while BodyPosition do
+						game:GetService("RunService").RenderStepped:Wait()
+						BodyPosition.Position = Player:GetMouse().Hit.Position
+					end
+				end))
+			end
+		end
+	end
+end
